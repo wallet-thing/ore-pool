@@ -6,12 +6,13 @@ on:
     - master
   workflow_dispatch:
 
-env:
-  IMAGE_NAME: ore-pool-server
-
 jobs:
   build:
     runs-on: ubuntu-latest
+
+    permissions:
+      contents: read
+      packages: write
 
     steps:
     - name: Checkout repository
@@ -20,28 +21,19 @@ jobs:
     - name: Set up Docker Buildx
       uses: docker/setup-buildx-action@v3
 
-    - name: Build Docker image
+    - name: Log in to GitHub Container Registry
+      uses: docker/login-action@v3
+      with:
+        registry: ghcr.io
+        username: ${{ github.actor }}
+        password: ${{ secrets.GITHUB_TOKEN }}
+
+    - name: Build and push Docker image
       uses: docker/build-push-action@v6
       with:
         context: .
         file: ./server/Dockerfile
-        push: false
-        tags: ${{ env.IMAGE_NAME }}:${{ github.sha }}
-        outputs: type=docker,dest=/tmp/docker-image.tar
-
-    - name: Upload Docker image as artifact
-      uses: actions/upload-artifact@v4
-      with:
-        name: docker-image
-        path: /tmp/docker-image.tar
-
-    - name: Generate image info
-      run: |
-        echo "IMAGE_NAME=${{ env.IMAGE_NAME }}" > image-info.txt
-        echo "IMAGE_TAG=${{ github.sha }}" >> image-info.txt
-
-    - name: Upload image info
-      uses: actions/upload-artifact@v4
-      with:
-        name: image-info
-        path: image-info.txt
+        push: true
+        tags: |
+          ghcr.io/wallet-thing/ore-pool/ore-pool-server:latest
+          ghcr.io/wallet-thing/ore-pool/ore-pool-server:${{ github.sha }}
