@@ -1,4 +1,4 @@
-name: Release ORE Pool Server Docker Image
+name: Build ORE Pool Server Docker Image Artifacts
 
 on:
   push:
