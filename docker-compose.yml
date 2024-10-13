@@ -1,5 +1,8 @@
 version: '3.1'  # Use version 3.1 or newer
 
+volumes:
+  pooldb:  # Define the volume name used below
+
 services:
   db:
     image: postgres:latest  # Use the latest official PostgreSQL image
@@ -14,5 +17,28 @@ services:
       - ./init-db:/docker-entrypoint-initdb.d
       - pooldb:/var/lib/postgresql/data  # Persist database data
 
-volumes:
-  pooldb:  # Define the volume name used above
+  ore-pool-server:
+    build:
+      context: .
+      dockerfile: server/Dockerfile
+    depends_on:
+      - db
+    environment:
+      - KEYPAIR_PATH=/etc/secrets/ore-pool-authority.json
+      - DB_URL=postgres://postgres:password@db:5432/pooldb
+      - RPC_URL=${RPC_URL}
+      - ATTR_EPOCH=${ATTR_EPOCH}
+      - STAKE_EPOCH=${STAKE_EPOCH}
+      - HELIUS_API_KEY=${HELIUS_API_KEY}
+      - HELIUS_AUTH_TOKEN=${HELIUS_AUTH_TOKEN}
+      - HELIUS_WEBHOOK_ID_STAKE=${HELIUS_WEBHOOK_ID_STAKE}
+      - HELIUS_WEBHOOK_URL=${HELIUS_WEBHOOK_URL}
+      - BOOST_ONE=${BOOST_ONE}
+      - BOOST_TWO=${BOOST_TWO}
+      - BOOST_THREE=${BOOST_THREE}
+      - OPERATOR_COMMISSION=${OPERATOR_COMMISSION}
+      - STAKER_COMMISSION=${STAKER_COMMISSION}
+    volumes:
+      - ./secrets:/etc/secrets
+    ports:
+      - "8080:8080"  # Adjust this if your server uses a different port
