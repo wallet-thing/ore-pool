@@ -37,8 +37,6 @@ jobs:
 
     - name: Generate image info
       run: |
-        # echo "IMAGE_NAME=${{ env.IMAGE_NAME }}" > image-info.txt
-        # echo "IMAGE_TAG=${{ github.sha }}" >> image-info.txt
         echo "IMAGE_NAME=${{ env.IMAGE_NAME }}" >> $GITHUB_OUTPUT
         echo "IMAGE_TAG=${{ github.sha }}" >> $GITHUB_OUTPUT
 
