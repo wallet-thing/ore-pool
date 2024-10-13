@@ -1,3 +1,9 @@
 .DS_Store
 target
 test-ledger
+
+# Ignore everything in secrets directory
+secrets/*
+
+# Except the .keep file
+!secrets/.keep
