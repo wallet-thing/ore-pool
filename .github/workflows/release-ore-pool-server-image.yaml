@@ -2,7 +2,8 @@ name: Release ORE Pool Server Docker Image
 
 on:
   push:
-    branches: [ main ]
+    branches:
+    - master
   workflow_dispatch:
 
 env:
@@ -29,7 +30,7 @@ jobs:
         outputs: type=docker,dest=/tmp/docker-image.tar
 
     - name: Upload Docker image as artifact
-      uses: actions/upload-artifact@v2
+      uses: actions/upload-artifact@v4
       with:
         name: docker-image
         path: /tmp/docker-image.tar
@@ -40,7 +41,7 @@ jobs:
         echo "IMAGE_TAG=${{ github.sha }}" >> image-info.txt
 
     - name: Upload image info
-      uses: actions/upload-artifact@v2
+      uses: actions/upload-artifact@v4
       with:
         name: image-info
         path: image-info.txt
