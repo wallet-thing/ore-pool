@@ -8,7 +8,7 @@ mod utils;
 mod webhook;
 
 use core::panic;
-use std::{collections::HashMap, sync::Arc};
+use std::{collections::HashMap, env, sync::Arc};
 
 use actix_web::{get, middleware, web, App, HttpResponse, HttpServer, Responder};
 use aggregator::{Aggregator, Contribution, Stakers};
@@ -141,10 +141,17 @@ async fn main() -> Result<(), error::Error> {
             )
             .service(health)
     })
-    .bind("0.0.0.0:3000")?
+    .bind(format!("0.0.0.0:{}", get_port()))?
     .run()
     .await
     .map_err(From::from)
+}
+
+fn get_port() -> u16 {
+    env::var("PORT")
+        .ok()
+        .and_then(|p| p.parse().ok())
+        .unwrap_or(8080)
 }
 
 async fn commit_stake(
@@ -169,14 +176,14 @@ async fn commit_stake(
 
 // denominated in minutes
 fn stake_commit_epoch() -> Result<u64, error::Error> {
-    let string = std::env::var("STAKE_EPOCH")?;
+    let string = env::var("STAKE_EPOCH")?;
     let epoch: u64 = string.parse()?;
     Ok(epoch)
 }
 
 // denominated in minutes
 fn attribution_epoch() -> Result<u64, error::Error> {
-    let string = std::env::var("ATTR_EPOCH")?;
+    let string = env::var("ATTR_EPOCH")?;
     let epoch: u64 = string.parse()?;
     Ok(epoch)
 }
