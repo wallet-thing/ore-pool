@@ -24,7 +24,7 @@ services:
     depends_on:
       - db
     environment:
-      - KEYPAIR_PATH=/etc/secrets/ore-pool-authority.json
+      - KEYPAIR_PATH=/etc/secrets/ore-pool-operator.json
       - DB_URL=postgres://postgres:password@db:5432/pooldb
       - RPC_URL=${RPC_URL}
       - ATTR_EPOCH=${ATTR_EPOCH}

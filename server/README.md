@@ -12,7 +12,7 @@ Run the docker image:
 1. Generate a keypair for the pool authority:
 
 ```bash
-solana-keygen new --outfile ./secrets/ore-pool-authority.json 
+solana-keygen new --outfile ./secrets/ore-pool-operator.json 
 ```
 
 ... do other stuff in root README.md ...
