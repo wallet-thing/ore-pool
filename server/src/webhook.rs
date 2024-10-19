@@ -3,7 +3,9 @@ use base64::{prelude::BASE64_STANDARD, Engine};
 use ore_pool_api::event::UnstakeEvent;
 use solana_sdk::pubkey::Pubkey;
 
-use crate::{aggregator::Aggregator, database, error::Error, operator::Operator};
+use crate::{
+    aggregator::Aggregator, database, error::Error, operator::Operator, utils::try_env_var,
+};
 
 const HELIUS_URL: &str = "https://api.helius.xyz";
 const HELIUS_WEBHOOK_API_PATH: &str = "v0/webhooks";
@@ -381,17 +383,17 @@ impl Client {
 
 /// this the /webhook path that your server exposes to helius.
 fn helius_webhook_url() -> Result<String, Error> {
-    std::env::var("HELIUS_WEBHOOK_URL").map_err(From::from)
+    try_env_var("HELIUS_WEBHOOK_URL")
 }
 
 fn helius_api_key() -> Result<String, Error> {
-    std::env::var("HELIUS_API_KEY").map_err(From::from)
+    try_env_var("HELIUS_API_KEY")
 }
 
 fn helius_auth_token() -> Result<String, Error> {
-    std::env::var("HELIUS_AUTH_TOKEN").map_err(From::from)
+    try_env_var("HELIUS_AUTH_TOKEN")
 }
 
 fn helius_webhook_id() -> Result<String, Error> {
-    std::env::var("HELIUS_WEBHOOK_ID").map_err(From::from)
+    try_env_var("HELIUS_WEBHOOK_ID")
 }

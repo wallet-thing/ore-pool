@@ -24,8 +24,8 @@ pub enum Error {
     SerdeJson(#[from] serde_json::Error),
     #[error("std io")]
     StdIO(#[from] std::io::Error),
-    #[error("std env")]
-    StdEnv(#[from] std::env::VarError),
+    #[error("Environment variable not set: {0}")]
+    StdEnv(String, #[source] std::env::VarError),
     #[error("std parse int")]
     StdParseInt(#[from] std::num::ParseIntError),
     #[error("solana client")]

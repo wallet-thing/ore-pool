@@ -1,6 +1,6 @@
-use std::{env, pin::Pin, str::FromStr, sync::Arc};
+use std::{pin::Pin, str::FromStr, sync::Arc};
 
-use crate::{error::Error, operator::Operator, tx};
+use crate::{error::Error, operator::Operator, tx, utils::env_var_or_panic};
 use deadpool_postgres::{GenericClient, Object, Pool};
 use futures::{Stream, StreamExt, TryStreamExt};
 use futures_util::pin_mut;
@@ -11,7 +11,7 @@ use tokio_postgres::{NoTls, Row};
 
 pub fn create_pool() -> Pool {
     let mut cfg = deadpool_postgres::Config::new();
-    cfg.url = Some(env::var("DB_URL").expect("DB_URL must be set").to_string());
+    cfg.url = Some(env_var_or_panic("DB_URL"));
     cfg.create_pool(None, NoTls).unwrap()
 }
 

@@ -1,5 +1,9 @@
+use std::env;
+
 use actix_cors::Cors;
 use actix_web::http::header;
+
+use crate::error::Error;
 
 pub fn create_cors() -> Cors {
     Cors::default()
@@ -12,4 +16,12 @@ pub fn create_cors() -> Cors {
         .allowed_headers(vec![header::AUTHORIZATION, header::ACCEPT])
         .allowed_header(header::CONTENT_TYPE)
         .max_age(3600)
+}
+
+pub fn try_env_var(name: &str) -> Result<String, Error> {
+    env::var(name).map_err(|e| Error::StdEnv(name.to_string(), e))
+}
+
+pub fn env_var_or_panic(name: &str) -> String {
+    try_env_var(name).expect(&format!("Required environment variable {} not set", name))
 }

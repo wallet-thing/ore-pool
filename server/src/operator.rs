@@ -16,7 +16,7 @@ use solana_sdk::{
 };
 use steel::AccountDeserialize;
 
-use crate::{database, error::Error, tx};
+use crate::{database, error::Error, tx, utils::try_env_var};
 
 pub const BUFFER_OPERATOR: u64 = 5;
 const MIN_DIFFICULTY: Option<u64> = None;
@@ -295,7 +295,7 @@ impl Operator {
     }
 
     fn keypair_path() -> Result<String, Error> {
-        std::env::var("KEYPAIR_PATH").map_err(From::from)
+        try_env_var("KEYPAIR_PATH").map_err(From::from)
     }
 
     fn rpc_client() -> Result<RpcClient, Error> {
@@ -307,7 +307,7 @@ impl Operator {
     }
 
     fn rpc_url() -> Result<String, Error> {
-        std::env::var("RPC_URL").map_err(From::from)
+        try_env_var("RPC_URL").map_err(From::from)
     }
 
     fn load_boosts() -> Result<Vec<Pubkey>, Error> {
@@ -345,13 +345,13 @@ impl Operator {
     }
 
     fn operator_commission() -> Result<u64, Error> {
-        let str = std::env::var("OPERATOR_COMMISSION")?;
+        let str = try_env_var("OPERATOR_COMMISSION")?;
         let commission: u64 = str.parse()?;
         Ok(commission)
     }
 
     fn staker_commission() -> Result<u64, Error> {
-        let str = std::env::var("STAKER_COMMISSION")?;
+        let str = try_env_var("STAKER_COMMISSION")?;
         let commission: u64 = str.parse()?;
         Ok(commission)
     }

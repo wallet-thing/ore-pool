@@ -8,12 +8,12 @@ mod utils;
 mod webhook;
 
 use core::panic;
-use std::{collections::HashMap, env, sync::Arc};
+use std::{collections::HashMap, sync::Arc};
 
 use actix_web::{get, middleware, web, App, HttpResponse, HttpServer, Responder};
 use aggregator::{Aggregator, Contribution, Stakers};
 use operator::Operator;
-use utils::create_cors;
+use utils::{create_cors, try_env_var};
 
 // TODO: publish attestation to s3
 // write attestation url to db with last-hash-at as foreign key
@@ -148,7 +148,7 @@ async fn main() -> Result<(), error::Error> {
 }
 
 fn get_port() -> u16 {
-    env::var("PORT")
+    try_env_var("PORT")
         .ok()
         .and_then(|p| p.parse().ok())
         .unwrap_or(8080)
@@ -176,14 +176,14 @@ async fn commit_stake(
 
 // denominated in minutes
 fn stake_commit_epoch() -> Result<u64, error::Error> {
-    let string = env::var("STAKE_EPOCH")?;
+    let string = try_env_var("STAKE_EPOCH")?;
     let epoch: u64 = string.parse()?;
     Ok(epoch)
 }
 
 // denominated in minutes
 fn attribution_epoch() -> Result<u64, error::Error> {
-    let string = env::var("ATTR_EPOCH")?;
+    let string = try_env_var("ATTR_EPOCH")?;
     let epoch: u64 = string.parse()?;
     Ok(epoch)
 }
